@@ -87,6 +87,10 @@ class GoogleMapController {
         _googleMapState
             .onLongPress(LatLng._fromJson(call.arguments['position']));
         break;
+      /// kris - mod
+      case 'marker#generateIcons':
+        return _googleMapState.onGenerateIcons(call.arguments['descriptors']);
+        break;
       default:
         throw MissingPluginException();
     }
@@ -120,6 +124,10 @@ class GoogleMapController {
       'markers#update',
       markerUpdates._toMap(),
     );
+  }
+
+  Future<void> clearMarkersCache() async {
+    await channel.invokeMethod<void>('markers#clearCache');
   }
 
   /// Updates polygon configuration.

@@ -33,7 +33,9 @@ import java.util.Map;
 /** Conversions between JSON-like values and GoogleMaps data types. */
 class Convert {
 
-  private static BitmapDescriptor toBitmapDescriptor(Object o) {
+  //kris mod
+  static BitmapDescriptor toBitmapDescriptor(Object o) {
+    if (o instanceof BitmapDescriptor) return (BitmapDescriptor)o;
     final List<?> data = toList(o);
     switch (toString(data.get(0))) {
       case "defaultMarker":

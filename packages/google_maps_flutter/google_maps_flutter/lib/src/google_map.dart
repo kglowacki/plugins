@@ -54,6 +54,7 @@ class GoogleMap extends StatefulWidget {
     this.onCameraIdle,
     this.onTap,
     this.onLongPress,
+    this.onGenerateIcons,
   })  : assert(initialCameraPosition != null),
         super(key: key);
 
@@ -135,6 +136,9 @@ class GoogleMap extends StatefulWidget {
 
   /// Called every time a [GoogleMap] is long pressed.
   final ArgumentCallback<LatLng> onLongPress;
+
+  /// kris mod
+  final Future<Map<dynamic,BitmapDescriptor>> Function(List descriptors) onGenerateIcons;
 
   /// True if a "My Location" layer should be shown on the map.
   ///
@@ -373,6 +377,19 @@ class _GoogleMapState extends State<GoogleMap> {
     assert(position != null);
     if (widget.onLongPress != null) {
       widget.onLongPress(position);
+    }
+  }
+
+  /// kris - mod
+  Future<dynamic> onGenerateIcons(dynamic descriptors) {
+    if (widget.onGenerateIcons != null) {
+      return widget.onGenerateIcons(descriptors as List).then((icons) => icons.map((key, value) => MapEntry(key,value._json)));
+    } else {
+      var result = {};
+      (descriptors as List).forEach((desc) {
+        result[desc] = BitmapDescriptor.defaultMarker._toJson();
+      });
+      return Future.value(result);
     }
   }
 }

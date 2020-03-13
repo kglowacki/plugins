@@ -292,14 +292,16 @@ final class GoogleMapController
           result.success(null);
           break;
         }
+      // kris - mod
       case "markers#update":
         {
-          Object markersToAdd = call.argument("markersToAdd");
-          markersController.addMarkers((List<Object>) markersToAdd);
-          Object markersToChange = call.argument("markersToChange");
-          markersController.changeMarkers((List<Object>) markersToChange);
-          Object markerIdsToRemove = call.argument("markerIdsToRemove");
-          markersController.removeMarkers((List<Object>) markerIdsToRemove);
+          Mod.markersUpdate(methodChannel, call, result, markersController);
+          break;
+        }
+      // kris - mod
+      case "markers#clearCache":
+        {
+          Mod.clearCache();
           result.success(null);
           break;
         }
