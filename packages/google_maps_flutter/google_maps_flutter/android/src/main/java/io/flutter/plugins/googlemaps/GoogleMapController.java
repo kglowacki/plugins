@@ -77,7 +77,7 @@ final class GoogleMapController
   private final AtomicInteger activityState;
   private final MethodChannel methodChannel;
   private final MapView mapView;
-  private GoogleMap googleMap;
+    private GoogleMap googleMap;
   private boolean trackCameraPosition = false;
   private boolean myLocationEnabled = false;
   private boolean myLocationButtonEnabled = false;
@@ -95,6 +95,7 @@ final class GoogleMapController
       mApplication; // Do not use direclty, use getApplication() instead to get correct application object for both v1 and v2 embedding.
   private final PluginRegistry.Registrar registrar; // For v1 embedding only.
   private final MarkersController markersController;
+  private final MarkersUpdater markersUpdater;
   private final PolygonsController polygonsController;
   private final PolylinesController polylinesController;
   private final CirclesController circlesController;
@@ -112,7 +113,8 @@ final class GoogleMapController
       Lifecycle lifecycle,
       PluginRegistry.Registrar registrar,
       int registrarActivityHashCode,
-      GoogleMapOptions options) {
+      GoogleMapOptions options,
+      int bitmapCacheSize) {
     this.id = id;
     this.context = context;
     this.activityState = activityState;
@@ -125,6 +127,7 @@ final class GoogleMapController
     this.registrar = registrar;
     this.activityHashCode = registrarActivityHashCode;
     this.markersController = new MarkersController(methodChannel);
+    this.markersUpdater = new MarkersUpdater(methodChannel, markersController, new LruBitmapCache(bitmapCacheSize));
     this.polygonsController = new PolygonsController(methodChannel, density);
     this.polylinesController = new PolylinesController(methodChannel, density);
     this.circlesController = new CirclesController(methodChannel, density);
@@ -295,13 +298,17 @@ final class GoogleMapController
       // kris - mod
       case "markers#update":
         {
-          Mod.markersUpdate(methodChannel, call, result, markersController);
+          markersUpdater.markersUpdate(
+                  (List<Object>)call.argument("markersToAdd"),
+                  (List<Object>)call.argument("markersToChange"),
+                  (List<Object>)call.argument("markerIdsToRemove"),
+                  result);
           break;
         }
       // kris - mod
       case "markers#clearCache":
         {
-          Mod.clearCache();
+          markersUpdater.clearCache();
           result.success(null);
           break;
         }
@@ -758,7 +765,7 @@ final class GoogleMapController
   }
 
   private void updateInitialMarkers() {
-    markersController.addMarkers(initialMarkers);
+    markersUpdater.addMarkers(initialMarkers); // kris - mod (before: markersController.addMarkers(initialMarkers));
   }
 
   @Override

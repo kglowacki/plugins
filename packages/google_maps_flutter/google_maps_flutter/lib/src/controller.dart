@@ -88,8 +88,8 @@ class GoogleMapController {
             .onLongPress(LatLng._fromJson(call.arguments['position']));
         break;
       /// kris - mod
-      case 'marker#generateIcons':
-        return _googleMapState.onGenerateIcons(call.arguments['descriptors']);
+      case 'marker#onResolveBitmaps':
+        return _googleMapState.onResolveBitmaps(call.arguments['keys']);
         break;
       default:
         throw MissingPluginException();

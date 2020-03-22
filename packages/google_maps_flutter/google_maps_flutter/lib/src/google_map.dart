@@ -54,7 +54,7 @@ class GoogleMap extends StatefulWidget {
     this.onCameraIdle,
     this.onTap,
     this.onLongPress,
-    this.onGenerateIcons,
+    this.onResolveBitmaps,
   })  : assert(initialCameraPosition != null),
         super(key: key);
 
@@ -137,8 +137,10 @@ class GoogleMap extends StatefulWidget {
   /// Called every time a [GoogleMap] is long pressed.
   final ArgumentCallback<LatLng> onLongPress;
 
-  /// kris mod
-  final Future<Map<dynamic,BitmapDescriptor>> Function(List descriptors) onGenerateIcons;
+  /// Called when Marker with BitmapDescriptor.resolvable is to be displayed
+  /// for the first time. The result is cached so
+  /// subsequent markers using the same resolvable bitmap do not need to wait
+  final Future<Map<dynamic,BitmapDescriptor>> Function(List keys) onResolveBitmaps;
 
   /// True if a "My Location" layer should be shown on the map.
   ///
@@ -381,13 +383,13 @@ class _GoogleMapState extends State<GoogleMap> {
   }
 
   /// kris - mod
-  Future<dynamic> onGenerateIcons(dynamic descriptors) {
-    if (widget.onGenerateIcons != null) {
-      return widget.onGenerateIcons(descriptors as List).then((icons) => icons.map((key, value) => MapEntry(key,value._json)));
+  Future<Map<dynamic,dynamic>> onResolveBitmaps(dynamic keys) {
+    if (widget.onResolveBitmaps != null) {
+      return widget.onResolveBitmaps(keys as List).then((icons) => icons.map((key, value) => MapEntry(key,value._json)));
     } else {
-      var result = {};
-      (descriptors as List).forEach((desc) {
-        result[desc] = BitmapDescriptor.defaultMarker._toJson();
+      Map<dynamic, BitmapDescriptor> result = {};
+      (keys as List).forEach((key) {
+        result[key] = BitmapDescriptor.defaultMarker._toJson();
       });
       return Future.value(result);
     }

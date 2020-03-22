@@ -48,7 +48,8 @@ class MarkerIconsBodyState extends State<MarkerIconsBody> {
                 target: _kMapCenter,
                 zoom: 7.0,
               ),
-              markers: _createMarker(),
+              markers: _createMarkers(),
+              onResolveBitmaps: _onResolveBitmaps,
               onMapCreated: _onMapCreated,
             ),
           ),
@@ -57,7 +58,7 @@ class MarkerIconsBodyState extends State<MarkerIconsBody> {
     );
   }
 
-  Set<Marker> _createMarker() {
+  Set<Marker> _createMarkers() {
     // TODO(iskakaushik): Remove this when collection literals makes it to stable.
     // https://github.com/flutter/flutter/issues/28312
     // ignore: prefer_collection_literals
@@ -67,6 +68,16 @@ class MarkerIconsBodyState extends State<MarkerIconsBody> {
         position: _kMapCenter,
         icon: _markerIcon,
       ),
+      Marker(
+        markerId: MarkerId("marker_2"),
+        position: LatLng(_kMapCenter.latitude-0.1, _kMapCenter.longitude-0.1),
+        icon: BitmapDescriptor.resolvable(100.0)
+      ),
+      Marker(
+          markerId: MarkerId("marker_3"),
+          position: LatLng(_kMapCenter.latitude+0.1, _kMapCenter.longitude+0.1),
+          icon: BitmapDescriptor.resolvable(200.0)
+      )
     ].toSet();
   }
 
@@ -84,6 +95,15 @@ class MarkerIconsBodyState extends State<MarkerIconsBody> {
     setState(() {
       _markerIcon = bitmap;
     });
+  }
+  
+  Future<Map<dynamic, BitmapDescriptor>> _onResolveBitmaps(List<dynamic> keys) {
+    print("keys: ${keys.join('; ')}");
+    Map<dynamic,BitmapDescriptor> result = {};
+    keys.forEach((key) {
+      result[key] = BitmapDescriptor.defaultMarkerWithHue(key);
+    });
+    return Future.value(result);
   }
 
   void _onMapCreated(GoogleMapController controllerParam) {

@@ -5,7 +5,6 @@
 #import "GoogleMapMarkerController.h"
 #import "JsonConversions.h"
 
-static UIImage* ExtractIcon(NSObject<FlutterPluginRegistrar>* registrar, NSArray* icon);
 static void InterpretInfoWindow(id<FLTGoogleMapMarkerOptionsSink> sink, NSDictionary* data);
 
 @implementation FLTGoogleMapMarkerController {
@@ -177,9 +176,12 @@ static UIImage* scaleImage(UIImage* image, NSNumber* scaleParam) {
   return image;
 }
 
-static UIImage* ExtractIcon(NSObject<FlutterPluginRegistrar>* registrar, NSArray* iconData) {
+UIImage* ExtractIcon(NSObject<FlutterPluginRegistrar>* registrar, NSArray* iconData) {
+    
   UIImage* image;
-  if ([iconData.firstObject isEqualToString:@"defaultMarker"]) {
+  if ([iconData.firstObject isKindOfClass:[UIImage class]]) {
+    image = iconData.firstObject;
+  } else if ([iconData.firstObject isEqualToString:@"defaultMarker"]) {
     CGFloat hue = (iconData.count == 1) ? 0.0f : ToDouble(iconData[1]);
     image = [GMSMarker markerImageWithColor:[UIColor colorWithHue:hue / 360.0
                                                        saturation:1.0

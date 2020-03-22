@@ -37,7 +37,8 @@ class GoogleMapBuilder implements GoogleMapOptionsSink {
       Application application,
       Lifecycle lifecycle,
       PluginRegistry.Registrar registrar,
-      int activityHashCode) {
+      int activityHashCode,
+      int bitmapCacheSize) {
     final GoogleMapController controller =
         new GoogleMapController(
             id,
@@ -48,7 +49,8 @@ class GoogleMapBuilder implements GoogleMapOptionsSink {
             lifecycle,
             registrar,
             activityHashCode,
-            options);
+            options,
+            bitmapCacheSize);
     controller.init();
     controller.setMyLocationEnabled(myLocationEnabled);
     controller.setMyLocationButtonEnabled(myLocationButtonEnabled);

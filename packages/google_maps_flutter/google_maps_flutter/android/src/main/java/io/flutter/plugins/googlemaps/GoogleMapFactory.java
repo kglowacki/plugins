@@ -64,6 +64,7 @@ public class GoogleMapFactory extends PlatformViewFactory {
     if (params.containsKey("circlesToAdd")) {
       builder.setInitialCircles(params.get("circlesToAdd"));
     }
+    int bitmapCacheSize = params.containsKey("bitmapCacheSize") ? (Integer)params.get("bitmapCacheSize") : 1024;
     return builder.build(
         id,
         context,
@@ -72,6 +73,7 @@ public class GoogleMapFactory extends PlatformViewFactory {
         application,
         lifecycle,
         registrar,
-        activityHashCode);
+        activityHashCode,
+        bitmapCacheSize);
   }
 }

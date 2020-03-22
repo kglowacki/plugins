@@ -8,6 +8,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+extern UIImage* ExtractIcon(NSObject<FlutterPluginRegistrar>* registrar, NSArray* icon);
+
+
 // Defines marker UI options writable from Flutter.
 @protocol FLTGoogleMapMarkerOptionsSink
 - (void)setAlpha:(float)alpha;

@@ -4,6 +4,7 @@
 
 #import "GoogleMapController.h"
 #import "JsonConversions.h"
+#import "GoogleMapMarkerUpdater.h"
 
 #pragma mark - Conversion of JSON-like values sent via platform channels. Forward declarations.
 
@@ -59,6 +60,7 @@ static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toD
   FLTPolygonsController* _polygonsController;
   FLTPolylinesController* _polylinesController;
   FLTCirclesController* _circlesController;
+  FLTMarkersUpdater* _markersUpdater;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -98,9 +100,16 @@ static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toD
     _circlesController = [[FLTCirclesController alloc] init:_channel
                                                     mapView:_mapView
                                                   registrar:registrar];
+      
+    id bitmapCacheSize = args[@"bitmapCacheSize"];
+    _markersUpdater = [[FLTMarkersUpdater alloc] init: _channel
+                                                markersController: _markersController
+                                                registrar: registrar
+                                                cache:[[FLTLruBitmapCache alloc] initWithSize:(bitmapCacheSize ? (NSInteger)bitmapCacheSize : 1024)]];
+      
     id markersToAdd = args[@"markersToAdd"];
     if ([markersToAdd isKindOfClass:[NSArray class]]) {
-      [_markersController addMarkers:markersToAdd];
+      [_markersUpdater addMarkers:markersToAdd];
     }
     id polygonsToAdd = args[@"polygonsToAdd"];
     if ([polygonsToAdd isKindOfClass:[NSArray class]]) {
@@ -172,20 +181,15 @@ static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toD
   } else if ([call.method isEqualToString:@"map#waitForMap"]) {
     result(nil);
   } else if ([call.method isEqualToString:@"markers#update"]) {
-    id markersToAdd = call.arguments[@"markersToAdd"];
-    if ([markersToAdd isKindOfClass:[NSArray class]]) {
-      [_markersController addMarkers:markersToAdd];
-    }
-    id markersToChange = call.arguments[@"markersToChange"];
-    if ([markersToChange isKindOfClass:[NSArray class]]) {
-      [_markersController changeMarkers:markersToChange];
-    }
-    id markerIdsToRemove = call.arguments[@"markerIdsToRemove"];
-    if ([markerIdsToRemove isKindOfClass:[NSArray class]]) {
-      [_markersController removeMarkerIds:markerIdsToRemove];
-    }
-    result(nil);
-  } else if ([call.method isEqualToString:@"markers#showInfoWindow"]) {
+      [_markersUpdater markersUpdate:call.arguments[@"markersToAdd"]
+                        markersToChange:call.arguments[@"markersToChange"]
+                        markerIdsToRemove:call.arguments[@"markerIdsToRemove"]
+                        methodResult:result];
+  } else if ([call.method isEqualToString:@"markers#clearCache"]) {
+      [_markersUpdater clearCache];
+      result(nil);
+  }
+  else if ([call.method isEqualToString:@"markers#showInfoWindow"]) {
     id markerId = call.arguments[@"markerId"];
     if ([markerId isKindOfClass:[NSString class]]) {
       [_markersController showMarkerInfoWindow:markerId result:result];

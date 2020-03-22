@@ -103,9 +103,10 @@ class BitmapDescriptor {
   }
 
   /// kris - mod
-  static BitmapDescriptor generated(String descriptor) {
-    return BitmapDescriptor._(<dynamic>['generated', descriptor]);
+  static BitmapDescriptor resolvable(dynamic key) {
+    return BitmapDescriptor._(<dynamic>['resolvable', key]);
   }
+  dynamic toJSON() => _json;
 
   final dynamic _json;
 
