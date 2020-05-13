@@ -55,6 +55,7 @@ class GoogleMap extends StatefulWidget {
     this.onTap,
     this.onLongPress,
     this.onResolveBitmaps,
+    this.mapStyle
   })  : assert(initialCameraPosition != null),
         super(key: key);
 
@@ -77,6 +78,9 @@ class GoogleMap extends StatefulWidget {
 
   /// Type of map tiles to be rendered.
   final MapType mapType;
+
+  /// kris - JSON descriptor of map style
+  final String mapStyle;
 
   /// Preferred bounds for the camera zoom level.
   ///
@@ -224,6 +228,7 @@ class _GoogleMapState extends State<GoogleMap> {
       'polygonsToAdd': _serializePolygonSet(widget.polygons),
       'polylinesToAdd': _serializePolylineSet(widget.polylines),
       'circlesToAdd': _serializeCircleSet(widget.circles),
+      'mapStyle' : widget.mapStyle
     };
     if (defaultTargetPlatform == TargetPlatform.android) {
       return AndroidView(
@@ -417,7 +422,7 @@ class _GoogleMapOptions {
     this.padding,
     this.indoorViewEnabled,
     this.trafficEnabled,
-    this.buildingsEnabled,
+    this.buildingsEnabled
   });
 
   static _GoogleMapOptions fromWidget(GoogleMap map) {
@@ -437,7 +442,7 @@ class _GoogleMapOptions {
       padding: map.padding,
       indoorViewEnabled: map.indoorViewEnabled,
       trafficEnabled: map.trafficEnabled,
-      buildingsEnabled: map.buildingsEnabled,
+      buildingsEnabled: map.buildingsEnabled
     );
   }
 

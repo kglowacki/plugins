@@ -1,7 +1,6 @@
 // Copyright 2018 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
 part of google_maps_flutter;
 
 /// Defines a bitmap image. For a marker, this class can be used to set the
@@ -111,4 +110,24 @@ class BitmapDescriptor {
   final dynamic _json;
 
   dynamic _toJson() => _json;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    final BitmapDescriptor typedOther = other;
+    return isListEqual(_json, typedOther._json);
+  }
+}
+
+isListEqual(dynamic a, dynamic b) {
+  if (a==null && b==null) return false;
+  if (!(a is List) || !(b is List)) return false;
+  List al = a;
+  List bl = b;
+  if (al.length != bl.length) return false;
+  for (int i = 0; i < al.length ; i++) {
+    if (al[i] != bl[i]) return false;
+  }
+  return true;
 }

@@ -103,6 +103,7 @@ final class GoogleMapController
   private List<Object> initialPolygons;
   private List<Object> initialPolylines;
   private List<Object> initialCircles;
+  private final MapStyleOptions mapStyle;
 
   GoogleMapController(
       int id,
@@ -114,7 +115,8 @@ final class GoogleMapController
       PluginRegistry.Registrar registrar,
       int registrarActivityHashCode,
       GoogleMapOptions options,
-      int bitmapCacheSize) {
+      int bitmapCacheSize,
+      MapStyleOptions mapStyle) {
     this.id = id;
     this.context = context;
     this.activityState = activityState;
@@ -131,6 +133,7 @@ final class GoogleMapController
     this.polygonsController = new PolygonsController(methodChannel, density);
     this.polylinesController = new PolylinesController(methodChannel, density);
     this.circlesController = new CirclesController(methodChannel, density);
+    this.mapStyle = mapStyle;
   }
 
   @Override
@@ -198,6 +201,8 @@ final class GoogleMapController
     this.googleMap.setIndoorEnabled(this.indoorEnabled);
     this.googleMap.setTrafficEnabled(this.trafficEnabled);
     this.googleMap.setBuildingsEnabled(this.buildingsEnabled);
+    this.googleMap.setMapStyle(this.mapStyle);
+
     googleMap.setOnInfoWindowClickListener(this);
     if (mapReadyResult != null) {
       mapReadyResult.success(null);
@@ -213,6 +218,8 @@ final class GoogleMapController
     googleMap.setOnCircleClickListener(this);
     googleMap.setOnMapClickListener(this);
     googleMap.setOnMapLongClickListener(this);
+
+
     updateMyLocationSettings();
     markersController.setGoogleMap(googleMap);
     polygonsController.setGoogleMap(googleMap);

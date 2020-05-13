@@ -8,6 +8,8 @@ import android.app.Application;
 import android.content.Context;
 import androidx.lifecycle.Lifecycle;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.MapStyleOptions;
+
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.StandardMessageCodec;
@@ -64,7 +66,8 @@ public class GoogleMapFactory extends PlatformViewFactory {
     if (params.containsKey("circlesToAdd")) {
       builder.setInitialCircles(params.get("circlesToAdd"));
     }
-    int bitmapCacheSize = params.containsKey("bitmapCacheSize") ? (Integer)params.get("bitmapCacheSize") : 1024;
+    int bitmapCacheSize = params.get("bitmapCacheSize") != null ? (Integer)params.get("bitmapCacheSize") : 1024;
+    MapStyleOptions mapStyle = params.get("mapStyle") != null ? new MapStyleOptions((String)params.get("mapStyle")) : null;
     return builder.build(
         id,
         context,
@@ -74,6 +77,7 @@ public class GoogleMapFactory extends PlatformViewFactory {
         lifecycle,
         registrar,
         activityHashCode,
-        bitmapCacheSize);
+        bitmapCacheSize,
+        mapStyle);
   }
 }

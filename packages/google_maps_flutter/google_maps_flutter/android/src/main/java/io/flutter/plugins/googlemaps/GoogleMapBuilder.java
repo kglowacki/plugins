@@ -11,6 +11,8 @@ import androidx.lifecycle.Lifecycle;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MapStyleOptions;
+
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.PluginRegistry;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -38,7 +40,8 @@ class GoogleMapBuilder implements GoogleMapOptionsSink {
       Lifecycle lifecycle,
       PluginRegistry.Registrar registrar,
       int activityHashCode,
-      int bitmapCacheSize) {
+      int bitmapCacheSize,
+      MapStyleOptions mapStyle) {
     final GoogleMapController controller =
         new GoogleMapController(
             id,
@@ -50,7 +53,8 @@ class GoogleMapBuilder implements GoogleMapOptionsSink {
             registrar,
             activityHashCode,
             options,
-            bitmapCacheSize);
+            bitmapCacheSize,
+            mapStyle);
     controller.init();
     controller.setMyLocationEnabled(myLocationEnabled);
     controller.setMyLocationButtonEnabled(myLocationButtonEnabled);
@@ -88,6 +92,10 @@ class GoogleMapBuilder implements GoogleMapOptionsSink {
   @Override
   public void setMapType(int mapType) {
     options.mapType(mapType);
+  }
+
+  public void setMapStyle(MapStyleOptions options) {
+    // no idea
   }
 
   @Override

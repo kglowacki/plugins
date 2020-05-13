@@ -100,7 +100,7 @@ class MarkersUpdater {
 
     private Set<Object> getIconDescriptors(List<Object> markers) {
         Set<Object> descriptors = new HashSet<>();
-        if (markers != null) {
+        if (markers != null && !markers.isEmpty()) {
             int cacheHits = 0;
             for (Object marker : markers) {
                 if (marker != null) {
