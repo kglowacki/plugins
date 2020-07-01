@@ -91,11 +91,19 @@ public final class MethodCallHandlerImpl implements MethodCallHandler {
 
     if ("launch".equalsIgnoreCase(call.method)) {
       sender.send(intent);
-
       result.success(null);
     } else if ("canResolveActivity".equalsIgnoreCase(call.method)) {
       result.success(sender.canResolveActivity(intent));
-    } else {
+    } else if ("launchIntentForPackage".equalsIgnoreCase(call.method)) {   // kris - mod
+      Intent launchIntent = sender.getLaunchIntentForPackage(packageName);
+      if (launchIntent != null) {
+        sender.send(launchIntent);
+        result.success(true);
+      } else {
+        result.success(false);
+      }
+    }
+    else {
       result.notImplemented();
     }
   }

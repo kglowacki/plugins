@@ -152,6 +152,18 @@ class AndroidIntent {
     );
   }
 
+  // kris - mod
+  Future<bool> launchIntentForPackage() async {
+    if (!_platform.isAndroid) {
+      return false;
+    }
+
+    return await _channel.invokeMethod<bool>(
+      'launchIntentForPackage',
+      _buildArguments(),
+    );
+  }
+
   /// Constructs the map of arguments which is passed to the plugin.
   Map<String, dynamic> _buildArguments() {
     return {

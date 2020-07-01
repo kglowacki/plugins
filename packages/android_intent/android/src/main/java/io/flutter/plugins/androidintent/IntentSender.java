@@ -161,4 +161,9 @@ public final class IntentSender {
 
     return intent;
   }
+
+  // kris - mod
+  Intent getLaunchIntentForPackage(String packageName) {
+    return applicationContext.getPackageManager().getLaunchIntentForPackage(packageName);
+  }
 }
