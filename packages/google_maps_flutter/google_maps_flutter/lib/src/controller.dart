@@ -90,11 +90,10 @@ class GoogleMapController {
         .listen((MapTapEvent e) => _googleMapState.onTap(e.position));
     _googleMapsFlutterPlatform.onLongPress(mapId: mapId).listen(
         (MapLongPressEvent e) => _googleMapState.onLongPress(e.position));
-
     /// kris - mod
-    case 'marker#onResolveBitmaps':
-    return _googleMapState.onResolveBitmaps(call.arguments['keys']);
-    break;
+    _googleMapsFlutterPlatform.onResolveBitmaps(mapId: mapId).listen((ResolveBitmapsEvent e) {
+      _googleMapState.onResolveBitmaps(e.value).then(e.onResult, onError: e.onError);
+    });
   }
 
   /// Updates configuration options of the map user interface.
@@ -123,7 +122,7 @@ class GoogleMapController {
 
   // kris - mod
   Future<void> clearMarkersCache() async {
-    await channel.invokeMethod<void>('markers#clearCache');
+    await  _googleMapsFlutterPlatform.clearsBitmapCache(mapId: mapId);
   }
 
   /// Updates polygon configuration.

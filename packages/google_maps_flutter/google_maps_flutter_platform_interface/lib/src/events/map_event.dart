@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:async';
+
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 import 'package:google_maps_flutter_platform_interface/src/method_channel/method_channel_google_maps_flutter.dart';
 
@@ -150,4 +152,28 @@ class MapLongPressEvent extends _PositionedMapEvent<void> {
   ///
   /// The `position` of this event is the LatLng where the Map was long pressed.
   MapLongPressEvent(int mapId, LatLng position) : super(mapId, position, null);
+}
+
+// kris - mod
+class BidirectionalMapEvent<T,R> extends MapEvent<T> {
+  final Completer<R> _completer = Completer();
+
+  BidirectionalMapEvent(int mapId, T value) : super(mapId, value);
+
+  onResult(R value) {
+    _completer.complete(value);
+  }
+  onError(e) {
+    _completer.completeError(e);
+  }
+
+  Future<R> get result => _completer.future;
+}
+
+// kris - mod
+class ResolveBitmapsEvent extends BidirectionalMapEvent<List, Map<dynamic,dynamic>> {
+
+  /// Build an MapTap Event triggered from the map represented by `mapId`.
+  /// The `value` of this event is a list of bitmap descriptors that needs to be resolved by the caller
+  ResolveBitmapsEvent(int mapId, List value) : super(mapId, value);
 }

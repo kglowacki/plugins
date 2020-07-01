@@ -109,26 +109,28 @@ class BitmapDescriptor {
     return BitmapDescriptor._(<dynamic>['fromBytes', byteData]);
   }
 
-  /// kris - mod
-  static BitmapDescriptor resolvable(dynamic key) {
-    return BitmapDescriptor._(<dynamic>['resolvable', key]);
-  }
-
   final dynamic _json;
 
   /// Convert the object to a Json format.
   dynamic toJson() => _json;
 
+  /// kris - mod
+  static BitmapDescriptor resolvable(dynamic key) {
+    return BitmapDescriptor._(<dynamic>['resolvable', key]);
+  }
+
+  /// kris - mod
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other.runtimeType != runtimeType) return false;
     final BitmapDescriptor typedOther = other;
-    return isListEqual(_json, typedOther._json);
+    return _isListEqual(_json, typedOther._json);
   }
 }
 
-isListEqual(dynamic a, dynamic b) {
+/// kris - mod
+_isListEqual(dynamic a, dynamic b) {
   if (a==null && b==null) return false;
   if (!(a is List) || !(b is List)) return false;
   List al = a;

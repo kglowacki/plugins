@@ -304,11 +304,25 @@ abstract class GoogleMapsFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('onLongPress() has not been implemented.');
   }
 
-  /// Returns a widget displaying the map view
+  /// kris - mod
+  /// A Map requires caller to resolve some bitmapdescriptors (and return them as resolved bitmapdescriptors)
+  Stream<ResolveBitmapsEvent> onResolveBitmaps({@required int mapId}) {
+    throw UnimplementedError('onResolveBitmaps() has not been implemented.');
+  }
+
+  /// kris - mod
+  /// clears resolved bitmap cache
+  Future<void> clearsBitmapCache({@required int mapId}) {
+    throw UnimplementedError('clearsBitmapCache() has not been implemented.');
+  }
+
+    /// Returns a widget displaying the map view
   Widget buildView(
       Map<String, dynamic> creationParams,
       Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
       PlatformViewCreatedCallback onPlatformViewCreated) {
     throw UnimplementedError('buildView() has not been implemented.');
   }
+
+
 }

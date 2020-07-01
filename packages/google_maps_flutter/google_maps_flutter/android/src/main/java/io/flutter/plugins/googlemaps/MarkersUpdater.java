@@ -152,6 +152,7 @@ class MarkersUpdater {
     }
 
     void clearCache() {
+        Log.i(TAG, "clears bitmap cache");
         bitmapCache.evictAll();
     }
 }

@@ -13,6 +13,8 @@ import 'package:flutter/gestures.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 import 'package:stream_transform/stream_transform.dart';
 
+import '../../google_maps_flutter_platform_interface.dart';
+
 /// An implementation of [GoogleMapsFlutterPlatform] that uses [MethodChannel] to communicate with the native code.
 ///
 /// The `google_maps_flutter` plugin code itself never talks to the native code directly. It delegates
@@ -115,6 +117,16 @@ class MethodChannelGoogleMapsFlutter extends GoogleMapsFlutterPlatform {
     return _events(mapId).whereType<MapLongPressEvent>();
   }
 
+  // kris - mod
+  @override
+  Stream<ResolveBitmapsEvent> onResolveBitmaps({@required int mapId}) {
+    return _events(mapId).whereType<ResolveBitmapsEvent>();
+  }
+
+  Future<void> clearsBitmapCache({@required int mapId}) {
+    return channel(mapId).invokeMethod<void>('markers#clearCache');
+  }
+
   Future<dynamic> _handleMethodCall(MethodCall call, int mapId) async {
     switch (call.method) {
       case 'camera#onMoveStarted':
@@ -178,6 +190,14 @@ class MethodChannelGoogleMapsFlutter extends GoogleMapsFlutterPlatform {
           LatLng.fromJson(call.arguments['position']),
         ));
         break;
+
+      // kris - mod
+      case 'marker#onResolveBitmaps':
+        var event = ResolveBitmapsEvent(mapId, call.arguments['keys']);
+        _mapEventStreamController.add(event);
+        return event.result;
+        break;
+
       default:
         throw MissingPluginException();
     }

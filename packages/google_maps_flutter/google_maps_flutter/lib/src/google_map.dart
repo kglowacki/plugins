@@ -373,13 +373,13 @@ class _GoogleMapState extends State<GoogleMap> {
   }
 
   /// kris - mod
-  Future<Map<dynamic,dynamic>> onResolveBitmaps(dynamic keys) {
+  Future<Map<dynamic,dynamic>> onResolveBitmaps(List keys) {
     if (widget.onResolveBitmaps != null) {
-      return widget.onResolveBitmaps(keys as List).then((icons) => icons.map((key, value) => MapEntry(key,value._json)));
+      return widget.onResolveBitmaps(keys).then((icons) => icons.map((key, value) => MapEntry(key,value.toJson())));
     } else {
       Map<dynamic, BitmapDescriptor> result = {};
-      (keys as List).forEach((key) {
-        result[key] = BitmapDescriptor.defaultMarker._toJson();
+      keys.forEach((key) {
+        result[key] = BitmapDescriptor.defaultMarker.toJson();
       });
       return Future.value(result);
     }
